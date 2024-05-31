@@ -1,6 +1,6 @@
 streamlit
 PyMuPDF
-llama-index
+llama-index-core
 langchain_community
 huggingface-hub
 bs4
