@@ -1,7 +1,7 @@
 import streamlit as st
 import zipfile
 import io
-from llama_index_core import VectorStoreIndex, SimpleDocument
+from llama_index.core import VectorStoreIndex, SimpleDocument
 from langchain_community.llms import Ollama
 from bs4 import BeautifulSoup
 import fitz  # PyMuPDF
