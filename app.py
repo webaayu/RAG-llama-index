@@ -3,8 +3,8 @@ import fitz  # PyMuPDF
 import zipfile
 import io
 import os
-from llama_index import SimpleIndex
-from langchain_community.llms import Ollama
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+from langchain.llms import Ollama
 from bs4 import BeautifulSoup
 
 # Function to extract text from PDF file
@@ -81,8 +81,8 @@ def main():
         if combined_text:
             try:
                 # Create llama-index
-                index = SimpleIndex()
-                index.add_texts([combined_text])
+                documents = SimpleDirectoryReader("data").load_data()
+                index = VectorStoreIndex.from_documents(documents)
 
                 st.write("Texts indexed successfully with Llama-Index.")
 
