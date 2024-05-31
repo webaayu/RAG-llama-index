@@ -1,0 +1,6 @@
+streamlit
+PyMuPDF
+llama-index
+langchain_community
+huggingface-hub
+bs4
