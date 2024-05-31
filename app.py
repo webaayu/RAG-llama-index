@@ -1,11 +1,10 @@
 import streamlit as st
-import fitz  # PyMuPDF
 import zipfile
 import io
-import os
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
-from langchain.llms import Ollama
+from llama_index.core import VectorStoreIndex, SimpleDocument
+from langchain_community.llms import Ollama
 from bs4 import BeautifulSoup
+import fitz  # PyMuPDF
 
 # Function to extract text from PDF file
 def extract_text_from_pdf(file):
@@ -58,36 +57,29 @@ def main():
         bytes_data = uploaded_file.read()
         zip_file = io.BytesIO(bytes_data)
 
-        # Extract ZIP file contents
+        # Extract text from files in the ZIP
         extracted_texts = []
         with zipfile.ZipFile(zip_file, 'r') as z:
-            for file_info in z.infolist():
-                with z.open(file_info) as file:
-                    if file_info.filename.endswith('.pdf'):
-                        pdf_text = extract_text_from_pdf(file.read())
+            for file_name in z.namelist():
+                with z.open(file_name) as file:
+                    if file_name.endswith('.pdf'):
+                        pdf_text = extract_text_from_pdf(file)
                         if pdf_text:
                             extracted_texts.append(pdf_text)
-                    elif file_info.filename.endswith('.html') or file_info.filename.endswith('.htm'):
-                        html_text = extract_text_from_html(file.read())
+                    elif file_name.endswith('.html') or file_name.endswith('.htm'):
+                        html_text = extract_text_from_html(file)
                         if html_text:
                             extracted_texts.append(html_text)
-                    elif file_info.filename.endswith('.txt'):
-                        txt_text = extract_text_from_txt(file.read())
+                    elif file_name.endswith('.txt'):
+                        txt_text = extract_text_from_txt(file)
                         if txt_text:
                             extracted_texts.append(txt_text)
 
-        # Combine extracted texts
-        combined_text = "\n".join(extracted_texts)
-        if combined_text:
-            try:
-                # Create llama-index
-                documents = SimpleDirectoryReader("data").load_data()
-                index = VectorStoreIndex.from_documents(documents)
+        # Create llama-index
+        documents = [SimpleDocument(text=text) for text in extracted_texts]
+        index = VectorStoreIndex.from_documents(documents)
 
-                st.write("Texts indexed successfully with Llama-Index.")
-
-            except Exception as e:
-                st.error(f"Error occurred during text processing: {e}")
+        st.write("Texts indexed successfully with Llama-Index.")
 
     # Text input for prompt
     prompt = st.text_input("Ask a Question", "")
