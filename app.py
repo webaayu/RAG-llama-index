@@ -4,7 +4,7 @@ import zipfile
 import io
 import os
 from llama_index import SimpleIndex
-from langchain.llms import Ollama
+from langchain_community.llms import Ollama
 from bs4 import BeautifulSoup
 
 # Function to extract text from PDF file
