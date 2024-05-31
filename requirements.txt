@@ -1,6 +1,7 @@
 streamlit
 PyMuPDF
 llama-index-core
+llama-index
 langchain_community
 huggingface-hub
 bs4
